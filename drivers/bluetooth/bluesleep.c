@@ -120,8 +120,8 @@ DECLARE_DELAYED_WORK(sleep_workqueue, bluesleep_sleep_work);
 #define bluesleep_rx_idle()     schedule_delayed_work(&sleep_workqueue, 0)
 #define bluesleep_tx_idle()     schedule_delayed_work(&sleep_workqueue, 0)
 
-/* 5 second timeout */
-#define TX_TIMER_INTERVAL  5
+/* 1 second timeout */
+#define TX_TIMER_INTERVAL 1
 
 /* state variable names and bit positions */
 #define BT_PROTO	0x01
@@ -439,11 +439,12 @@ int bluesleep_start(bool is_clock_enabled)
 
 	// For ldisc-controlled BT, the clock is enabled by upper layers, so
 	// make bluesleep aware of this state.
-	if(is_clock_enabled) {
+	if (is_clock_enabled)
 		atomic_set(&uart_is_on, 1);
-	} else {
+#ifdef CONFIG_LINE_DISCIPLINE_DRIVER
+	else
 		hsuart_power(HS_UART_ON);
-	}
+#endif
 
 	enable_wakeup_irq(1);
 	set_bit(BT_PROTO, &flags);
@@ -639,7 +640,7 @@ static int bluesleep_probe(struct platform_device *pdev)
 			bsi->irq_polarity);
 
 	ret = request_irq(bsi->host_wake_irq, bluesleep_hostwake_isr,
-			IRQF_DISABLED | IRQF_TRIGGER_RISING,
+			IRQF_TRIGGER_RISING,
 			"bluetooth hostwake", NULL);
 	if (ret  < 0) {
 		pr_err("Couldn't acquire BT_HOST_WAKE IRQ");
@@ -647,7 +648,12 @@ static int bluesleep_probe(struct platform_device *pdev)
 	}
 
 	bsi->uport = msm_hs_get_uart_port(BT_PORT_ID);
-	atomic_set(&bsi->wakeup_irq_disabled, 1);
+	if (IS_ERR_OR_NULL(bsi->uport)) {
+		ret = -EPROBE_DEFER;
+		goto free_bt_ext_wake;
+	}
+
+	enable_wakeup_irq(0);
 
 	return 0;
 

@@ -100,7 +100,9 @@ enum sensor_sub_module_t {
 #ifndef CONFIG_LGE_CAMERA_DRIVER
 	SUB_MODULE_IR_LED,
 	SUB_MODULE_IR_CUT,
-#else
+#endif
+
+#if 1 /* CONFIG_MACH_LGE */
 	SUB_MODULE_PROXY,
 	SUB_MODULE_TCS,
 	SUB_MODULE_IRIS,
@@ -809,14 +811,15 @@ struct msm_tcs_cfg_data32 {
 #define VIDIOC_MSM_IR_CUT_CFG \
 	_IOWR('V', BASE_VIDIOC_PRIVATE + 15, struct msm_ir_cut_cfg_data_t)
 
-#else
+#endif
+#if 1 /* CONFIG_MACH_LGE */
 #define VIDIOC_MSM_PROXY_CFG \
 	_IOWR('V', BASE_VIDIOC_PRIVATE + 12, struct msm_proxy_cfg_data)
 
 #define VIDIOC_MSM_TCS_CFG \
-	_IOWR('V', BASE_VIDIOC_PRIVATE + 15, struct msm_tcs_cfg_data)
+	_IOWR('V', BASE_VIDIOC_PRIVATE + 16, struct msm_tcs_cfg_data)
 
 #define VIDIOC_MSM_IRIS_CFG \
-	_IOWR('V', BASE_VIDIOC_PRIVATE + 16, struct msm_iris_cfg_data)
+	_IOWR('V', BASE_VIDIOC_PRIVATE + 17, struct msm_iris_cfg_data)
 #endif
 #endif

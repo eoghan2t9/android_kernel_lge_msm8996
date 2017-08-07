@@ -334,15 +334,16 @@ struct msm_flash_cfg_data_t32 {
 #define VIDIOC_MSM_IR_CUT_CFG32 \
 	_IOWR('V', BASE_VIDIOC_PRIVATE + 15, struct msm_ir_cut_cfg_data_t32)
 
-#else
+#endif
+#if 1 /* CONFIG_MACH_LGE */
 #define VIDIOC_MSM_PROXY_CFG32 \
 	_IOWR('V', BASE_VIDIOC_PRIVATE + 12, struct msm_proxy_cfg_data32)
 
 #define VIDIOC_MSM_TCS_CFG32 \
-	_IOWR('V', BASE_VIDIOC_PRIVATE + 14, struct msm_tcs_cfg_data32)
+	_IOWR('V', BASE_VIDIOC_PRIVATE + 16, struct msm_tcs_cfg_data32)
 
 #define VIDIOC_MSM_IRIS_CFG32 \
-	_IOWR('V', BASE_VIDIOC_PRIVATE + 15, struct msm_iris_cfg_data32)
+	_IOWR('V', BASE_VIDIOC_PRIVATE + 17, struct msm_iris_cfg_data32)
 #endif
 #endif
 
